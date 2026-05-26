@@ -1,0 +1,21 @@
+# Java & Maven
+backend-api/target/
+.mvn/
+
+# Node
+frontend-web/node_modules/
+frontend-web/dist/
+
+# IDE & System
+.idea/
+.vscode/
+*.DS_Store
+
+# Secrets
+*.env
+
+# Docker
+**/docker-compose.override.yml
+
+# Logs
+*.log
