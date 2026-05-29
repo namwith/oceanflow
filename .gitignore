@@ -1,6 +1,10 @@
 # Java & Maven
 backend-api/target/
+backend-api/.mvn/
 .mvn/
+*.jar
+.gradle/
+build/
 
 # Node
 frontend-web/node_modules/
@@ -10,12 +14,21 @@ frontend-web/dist/
 .idea/
 .vscode/
 *.DS_Store
+*.class
+.classpath
+.project
+.settings/
 
-# Secrets
+# Secrets & Environment
 *.env
+*.env.local
 
 # Docker
 **/docker-compose.override.yml
 
 # Logs
 *.log
+logs/
+
+# Local Maven
+.oceanflow-local-maven/
