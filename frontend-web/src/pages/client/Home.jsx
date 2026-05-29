@@ -1,33 +1,34 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createOrder } from "../../services/orderService";
+import { getProducts } from "../../services/productService";
 import { formatCurrency } from "../../utils/formatCurrency";
 
-const availableProducts = [
-  {
-    id: 1,
-    name: "Cá Hồi Nauy",
-    pricePerUnit: 120000,
-    sellingUnit: "KG",
-  },
-  {
-    id: 2,
-    name: "Tôm Sú",
-    pricePerUnit: 220000,
-    sellingUnit: "KG",
-  },
-  {
-    id: 3,
-    name: "Ốc Hương",
-    pricePerUnit: 180000,
-    sellingUnit: "KG",
-  },
-];
-
 function Home() {
+  const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
   const [paymentMethod, setPaymentMethod] = useState("COD");
   const [message, setMessage] = useState(null);
+  const [isLoadingProducts, setIsLoadingProducts] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    async function loadProducts() {
+      try {
+        const apiResponse = await getProducts();
+        setProducts(apiResponse.data || []);
+      } catch (error) {
+        const errorMessage =
+          error?.response?.data?.message ||
+          error.message ||
+          "Không thể tải danh sách sản phẩm.";
+        setMessage({ type: "error", text: errorMessage });
+      } finally {
+        setIsLoadingProducts(false);
+      }
+    }
+
+    loadProducts();
+  }, []);
 
   const cartTotal = useMemo(
     () => cart.reduce((sum, item) => sum + item.subtotal, 0),
@@ -36,6 +37,8 @@ function Home() {
 
   const handleAddToCart = (product) => {
     setMessage(null);
+    const pricePerUnit = product.basePrice || 0;
+
     setCart((prevCart) => {
       const existing = prevCart.find((item) => item.productId === product.id);
       if (existing) {
@@ -56,8 +59,8 @@ function Home() {
           productId: product.id,
           name: product.name,
           orderedWeight: 0.5,
-          pricePerUnit: product.pricePerUnit,
-          subtotal: 0.5 * product.pricePerUnit,
+          pricePerUnit,
+          subtotal: 0.5 * pricePerUnit,
         },
       ];
     });
@@ -160,7 +163,15 @@ function Home() {
             Danh sách sản phẩm
           </h2>
           <div className="mt-6 space-y-4">
-            {availableProducts.map((product) => (
+            {isLoadingProducts && (
+              <p className="text-slate-600">Đang tải danh sách sản phẩm...</p>
+            )}
+
+            {!isLoadingProducts && products.length === 0 && (
+              <p className="text-slate-600">Chưa có sản phẩm nào.</p>
+            )}
+
+            {products.map((product) => (
               <div
                 key={product.id}
                 className="flex flex-col gap-4 rounded-2xl border border-slate-200 p-4 sm:flex-row sm:items-center sm:justify-between"
@@ -173,7 +184,7 @@ function Home() {
                     Đơn vị: {product.sellingUnit}
                   </p>
                   <p className="mt-1 text-slate-700">
-                    Giá: {formatCurrency(product.pricePerUnit)}
+                    Giá: {formatCurrency(product.basePrice)}
                   </p>
                 </div>
                 <button
@@ -239,7 +250,7 @@ function Home() {
                     <div className="rounded-2xl bg-slate-50 p-4 text-slate-700">
                       <p className="text-sm">Tạm tính</p>
                       <p className="mt-2 text-lg font-semibold text-slate-900">
-                        {formatCurrency(item.subtotal)}
+                        {formatCurrency(item.subtotal)} 
                       </p>
                     </div>
                   </div>
@@ -247,7 +258,9 @@ function Home() {
               ))}
 
               <div className="rounded-3xl border border-slate-200 bg-slate-50 p-4">
-                <p className="text-sm text-slate-600">Phương thức thanh toán</p>
+                <p className="text-sm text-slate-600">
+                  Phương thức thanh toán
+                </p>
                 <select
                   value={paymentMethod}
                   onChange={(event) => setPaymentMethod(event.target.value)}

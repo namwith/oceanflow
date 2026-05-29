@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +29,17 @@ public class OrderService {
     private final OrderItemRepository orderItemRepository;
     private final ProductBatchRepository productBatchRepository;
     private final ProductRepository productRepository;
+
+    @Transactional(readOnly = true)
+    public List<OrderResponseDTO> getOrders(String status) {
+        List<Order> orders = (status == null || status.isBlank())
+                ? orderRepository.findAll()
+                : orderRepository.findByStatusOrderByIdAsc(status);
+
+        return orders.stream()
+                .map(OrderMapper::toOrderResponseDTO)
+                .collect(Collectors.toList());
+    }
 
     /**
      * Logic nghiệp vụ: Nhân viên kho cập nhật cân nặng thực tế và hệ thống tiến

@@ -18,6 +18,7 @@ spring:
       write-dates-as-timestamps: false
 server:
   port: 8080
+
 jwt:
-  secret: change-me-please
+  secret: ${JWT_SECRET:change-me-in-production}
   expiration-ms: 3600000

@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @CrossOrigin("*")
 @RequestMapping("/api/v1/orders")
@@ -17,6 +19,14 @@ import org.springframework.web.bind.annotation.*;
 public class OrderController {
 
     private final OrderService orderService;
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<OrderResponseDTO>>> getOrders(
+            @RequestParam(required = false) String status) {
+
+        List<OrderResponseDTO> orders = orderService.getOrders(status);
+        return ResponseEntity.ok(ApiResponse.success(orders, "Lay danh sach don hang thanh cong."));
+    }
 
     @PostMapping
     public ResponseEntity<ApiResponse<OrderResponseDTO>> createOrder(

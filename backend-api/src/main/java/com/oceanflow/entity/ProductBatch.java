@@ -2,8 +2,6 @@ package com.oceanflow.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 import java.time.LocalDate;
 
 @Entity
@@ -30,7 +28,6 @@ public class ProductBatch {
     @Column(name = "origin_location")
     private String originLocation;
 
-    @Column(name = "certificates")
-    @JdbcTypeCode(SqlTypes.JSON)
-    private String certificates; // Lưu chứng nhận (tương thích với cả Postgres và H2)
+    @Column(name = "certificates", columnDefinition = "VARCHAR(4000)")
+    private String certificates; // Lưu chứng nhận JSON (VARCHAR compatible với H2 + PostgreSQL)
 }
