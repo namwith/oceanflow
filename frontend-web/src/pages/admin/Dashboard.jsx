@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { getOrders, updateActualWeights } from "../../services/orderService";
 import { formatCurrency } from "../../utils/formatCurrency";
 

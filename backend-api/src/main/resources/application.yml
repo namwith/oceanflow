@@ -12,7 +12,6 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-    database-platform: ${HIBERNATE_DIALECT:org.hibernate.dialect.H2Dialect}
   jackson:
     serialization:
       write-dates-as-timestamps: false
