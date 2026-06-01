@@ -1,23 +1,13 @@
 spring:
   datasource:
-    url: ${DB_URL:jdbc:h2:mem:seafooddb;DB_CLOSE_DELAY=-1;MODE=PostgreSQL}
-    driver-class-name: ${DB_DRIVER:org.h2.Driver}
-    username: ${DB_USERNAME:sa}
-    password: ${DB_PASSWORD:}
-  security:
-    user:
-      name: user
-      password: password
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
-  jackson:
-    serialization:
-      write-dates-as-timestamps: false
-server:
-  port: 8080
-
-jwt:
-  secret: ${JWT_SECRET:change-me-in-production}
-  expiration-ms: 3600000
+    properties:
+      hibernate:
+        format_sql: true
